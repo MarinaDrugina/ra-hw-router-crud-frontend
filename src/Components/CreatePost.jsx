@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function CreatePost() {
-  const [postText, setPostText] = useState('');
+  const navigate = useNavigate();
+  const [postText, setPostText] = useState("");
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const text = e.target.value;
     setPostText(text);
   };

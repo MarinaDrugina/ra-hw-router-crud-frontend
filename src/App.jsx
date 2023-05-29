@@ -1,39 +1,48 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
-import axios from 'axios';
-import uniqid from 'uniqid';
+import { useEffect, useState } from "react";
+import "./App.css";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import axios from "axios";
+import uniqid from "uniqid";
 
-import Post from './Components/Post';
-import CreatePost from './Components/CreatePost';
-import PostView from './Components/PostView';
+import Post from "./Components/Post";
+import CreatePost from "./Components/CreatePost";
+import PostView from "./Components/PostView";
 
 export default function App() {
   const [data, setData] = useState([]);
 
+  async function getPosts() {
+    const response = await axios.get("http://localhost:7070/posts");
+    const data = await response.data;
+    setData(data);
+  }
+
   useEffect(() => {
-    axios.get("http://localhost:7070/posts").then(response => setData(response.data));
-  });
+    getPosts();
+  }, []);
 
   return (
     <div className="App">
-      <Router>
+      {/* <Browser */}
+      <BrowserRouter>
         <Link to="/posts">
           <button className="button">Домашняя страница</button>
         </Link>
         <Link to="/posts/new">
           <button className="button">Создать пост</button>
         </Link>
-        <Switch>
-          <Route path="/posts/new" exact component={CreatePost} />
-          <Route path="/posts/:id" exact component={PostView} />
+
+        <Routes>
+          <Route path="/posts/new" Component={CreatePost} />
+          <Route path="/posts/:id" Component={PostView} />
           <Route
             path="/posts"
-            exact
-            component={() => data.map(post => <Post key={uniqid()} post={post} />)}
+            Component={() =>
+              data?.map((post) => <Post key={uniqid()} post={post} />)
+            }
           />
-        </Switch>
-      </Router>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
